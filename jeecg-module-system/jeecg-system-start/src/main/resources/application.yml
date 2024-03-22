@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: jeecg-system
+  profiles:
+    active: '@profile.name@'
+
+#字典翻译
+#easy-trans:
+#  #启用redis缓存 如果不用redis请设置为false
+#  is-enable-redis: false
+#  #启用全局翻译(拦截所有responseBody进行自动翻译)，如果对于性能要求很高可关闭此配置
+#  is-enable-global: true
+#  #启用平铺模式
+#  is-enable-tile: true
+#  #字典缓存放到redis 微服务模式请开启
+#  dict-use-redis: true
+#  # ruoyi相关的请开启
+#  is-enable-map-result: true
+#  # 反向翻译数据库类型 mysql
+#  db-type: mysql

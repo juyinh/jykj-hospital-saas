@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.mo.mapper.MoClinicAppointMapper">
+    <select id="queryPatientAppointList" resultType="org.jeecg.modules.mo.vo.MoPatientClinicAppointPageVO">
+        SELECT
+            hcp.id,
+            hcp.card_id,
+            hcp.doctor_id,
+            hcp.appoint_period,
+            hcp.appoint_status,
+            hcp.clinic_status,
+            hcp.clinic_begin_time,
+            hcp.appoint_day,
+            hpc.realname AS patientName,
+            hd.doctor_name,
+            hd.reg_fee,
+            hd.tenant_id,
+            ho.office_name,
+            st.`name` AS tenantName,
+            st.company_address,
+            st.company_address_code
+        FROM
+            his_clinic_appoint hcp
+                LEFT JOIN his_patient_card hpc ON hcp.card_id = hpc.id
+                LEFT JOIN his_doctor hd ON hcp.doctor_id = hd.id
+                LEFT JOIN his_office ho ON hd.office_id = ho.id
+                LEFT JOIN sys_tenant st ON hd.tenant_id = st.id
+        WHERE hcp.appoint_status != 0
+        AND hcp.del_flag = 0
+        AND hpc.open_id = #{openId}
+        <if test="queryDTO.hospitalName !=null and queryDTO.hospitalName !=''">
+            AND st.`name` LIKE CONCAT('%', #{queryDTO.hospitalName}, '%')
+        </if>
+        <if test="queryDTO.beginAppointDay != null and queryDTO.beginAppointDay != ''">
+            AND hcp.appoint_day &gt;= #{queryDTO.beginAppointDay}
+        </if>
+        <if test="queryDTO.endAppointDay != null and queryDTO.endAppointDay != ''">
+            AND hcp.appoint_day &lt;= #{queryDTO.endAppointDay}
+        </if>
+        <if test="queryDTO.clinicStatus == 0">
+            AND hcp.clinic_status in (0, 1, 2)
+            AND hcp.appoint_status = 2
+            AND STR_TO_DATE(CONCAT(hcp.appoint_day, ' ', IFNULL(SUBSTR(hcp.appoint_period, 1, 5), '00:00')), '%Y-%m-%d %H:%i') &gt; now()
+        </if>
+        <if test="queryDTO.clinicStatus == 1">
+            AND not exists(
+            SELECT
+            1
+            FROM
+            his_clinic_appoint hcpo
+            WHERE
+            hcpo.id = hcp.id
+            AND hcpo.clinic_status IN ( 0, 1, 2 )
+            AND hcpo.appoint_status = 2
+            AND STR_TO_DATE( CONCAT( hcpo.appoint_day, ' ', IFNULL(SUBSTR(hcp.appoint_period, 1, 5), '00:00')), '%Y-%m-%d %H:%i' ) &gt; now())
+        </if>
+        order by hcp.appoint_day desc
+    </select>
+    <select id="getAppointDetailList" resultType="org.jeecg.modules.mo.vo.MoClinicAppointDetailListVO">
+        SELECT
+            t1.id AS appointId,
+            t1.appoint_period,
+            t1.appoint_status
+        FROM
+            his_clinic_appoint t1
+        where t1.doctor_work_detail_id = #{doctorWorkDetailId}
+        AND t1.appoint_status != 4
+        ORDER BY t1.appoint_number ASC
+    </select>
+    <select id="queryAppointDetailById" parameterType="string" resultType="org.jeecg.modules.mo.vo.MoClinicAppointDetailVO">
+        SELECT
+        t1.id,
+        t1.doctor_work_detail_id,
+        t1.card_id,
+        t1.doctor_id,
+        t1.queue_number,
+        t1.appoint_number,
+        t1.appoint_day,
+        t1.appoint_period,
+        t1.appoint_status,
+        t1.clinic_status,
+        t1.clinic_begin_time,
+        t1.clinic_end_time,
+        t1.create_time,
+        t3.realname AS doctorName,
+        t4.realname AS patientName,
+        t5.NAME AS hospitalName
+        FROM
+        his_clinic_appoint t1
+        LEFT JOIN his_doctor t2 ON t1.doctor_id = t2.id
+        LEFT JOIN sys_user t3 ON t2.user_id = t3.id
+        LEFT JOIN his_patient_card t4 ON t1.card_id = t4.id
+        LEFT JOIN sys_tenant t5 ON t1.tenant_id = t5.id
+        <where>
+            t1.id = #{id}
+        </where>
+    </select>
+
+    <select id="getTodayQueueList" resultType="org.jeecg.modules.mo.vo.MoTodayQueueListVO">
+        SELECT
+            t1.id,
+            t1.doctor_work_detail_id,
+            t1.card_id,
+            t1.doctor_id,
+            t1.queue_number,
+            t1.appoint_number,
+            t1.appoint_day,
+            t1.appoint_period,
+            t1.appoint_status,
+            t1.clinic_status,
+            t1.clinic_begin_time,
+            t1.clinic_end_time,
+            t1.create_time AS queueDay,
+            t1.tenant_id,
+            t3.realname AS doctorName,
+            hpc.realname AS patientName,
+            t5.office_name,
+            hcr.clinic_room_name
+        FROM
+            his_patient_card hpc
+                INNER JOIN his_clinic_appoint t1 ON hpc.id = t1.card_id
+                LEFT JOIN his_doctor t2 ON t1.doctor_id = t2.id
+                LEFT JOIN sys_user t3 ON t2.user_id = t3.id
+                LEFT JOIN his_office t5 ON t2.office_id = t5.id
+                LEFT JOIN his_clinic_room hcr ON t2.clinic_room_id = hcr.id
+        WHERE
+            t1.queue_number != 0
+        AND t1.clinic_status &lt; 3
+        AND hpc.open_id = #{openId}
+        AND t1.appoint_day = #{appointDay}
+        order by t1.appoint_number asc
+    </select>
+</mapper>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.pc.mapper.PcClinicAppointMapper">
+    <select id="getPatientClinicDetail" parameterType="string" resultType="org.jeecg.modules.pc.vo.ClinicAppointDetailVO">
+        SELECT
+            t1.id,
+            t1.doctor_id,
+            t1.queue_number,
+            t1.appoint_status,
+            t2.id AS cardId,
+            t2.realname,
+            t2.age,
+            t2.sex,
+            t2.phone,
+            t2.birthday,
+            t3.id AS patientCaseId,
+            t3.case_detail AS caseDetail,
+            t3.diagnosis_result AS diagnosisResult,
+            t3.diagnosis_fee AS diagnosisFee
+        FROM
+                his_clinic_appoint t1
+                LEFT JOIN his_patient_card t2 ON t1.card_id = t2.id
+                LEFT JOIN his_patient_case t3 ON t1.id = t3.appoint_id
+        <where>
+            t1.id = #{appointId}
+        </where>
+    </select>
+
+    <select id="getAppointHistoryList" resultType="org.jeecg.modules.pc.vo.ClinicAppointHistoryPageVO">
+        SELECT
+        t1.id,
+        t1.appoint_day,
+        t1.appoint_period,
+        t1.appoint_status,
+        t2.doctor_name,
+        hpc.realname AS patientName
+        FROM
+        his_clinic_appoint t1
+        INNER JOIN his_patient_card hpc ON hpc.id = t1.card_id
+        LEFT JOIN his_doctor t2 ON t1.doctor_id = t2.id
+        WHERE
+        t1.del_flag = 0
+        AND t1.appoint_status != 0
+        <if test="doctorId !=null and doctorId!=''">
+            AND t1.doctor_id = #{doctorId}
+        </if>
+        <if test="pageDTO.doctorName !=null and pageDTO.doctorName!=''">
+            AND t2.doctor_name like concat('%',#{pageDTO.doctorName},'%')
+        </if>
+        <if test="pageDTO.patientName !=null and pageDTO.patientName!=''">
+            AND hpc.realname like concat('%',#{pageDTO.patientName},'%')
+        </if>
+        <if test="pageDTO.beginAppointDay != null">
+            AND t1.appoint_day &gt;= #{pageDTO.beginAppointDay}
+        </if>
+        <if test="pageDTO.endAppointDay != null">
+            AND t1.appoint_day &lt;= #{pageDTO.endAppointDay}
+        </if>
+        <if test="pageDTO.appointStatus != null">
+            AND t1.appoint_status = #{pageDTO.appointStatus}
+        </if>
+        ORDER BY t1.appoint_day DESC, t1.appoint_number ASC
+    </select>
+
+    <select id="getPatientAppointClinicSum" resultType="map">
+        SELECT
+        IFNULL(SUM( CASE WHEN t1.clinic_status = 3 THEN 1 ELSE 0 END ), 0) AS clinicSum,
+        IFNULL(SUM( CASE WHEN t1.appoint_status = 2 THEN 1 ELSE 0 END ), 0) AS appointSum,
+        appoint_day AS appointDay
+        FROM
+        his_clinic_appoint t1
+        WHERE
+         t1.appoint_day &gt;= #{beginTime}
+        AND t1.appoint_day &lt;= #{endTime}
+        GROUP BY appoint_day
+    </select>
+
+    <select id="getAgeData" resultType="org.jeecg.modules.pc.vo.PatientAgeSexVO">
+        SELECT
+        IFNULL(SUM( CASE WHEN t2.age &lt; 3 THEN 1 ELSE 0 END ), 0) AS age_below_3,
+        IFNULL(SUM( CASE WHEN t2.age BETWEEN 3 AND 10 THEN 1 ELSE 0 END ), 0) AS age_3_to_10,
+        IFNULL(SUM( CASE WHEN t2.age BETWEEN 10 AND 20 THEN 1 ELSE 0 END ), 0) AS age_10_to_20,
+        IFNULL(SUM( CASE WHEN t2.age BETWEEN 20 AND 40 THEN 1 ELSE 0 END ), 0) AS age_20_to_40,
+        IFNULL(SUM( CASE WHEN t2.age BETWEEN 40 AND 60 THEN 1 ELSE 0 END ), 0) AS age_40_to_60,
+        IFNULL(SUM( CASE WHEN t2.age &gt; 60 THEN 1 ELSE 0 END ), 0) AS age_above_60
+        FROM
+        his_clinic_appoint t1
+        INNER JOIN  his_patient_card t2 ON t1.card_id = t2.id
+        WHERE t1.clinic_status= 3
+        AND t1.clinic_end_time &gt;= #{beginTime}
+        AND t1.clinic_end_time &lt;= #{endTime}
+    </select>
+
+    <select id="getSexData" resultType="map">
+        SELECT
+        IFNULL(SUM( CASE WHEN t2.sex = 1 THEN 1 ELSE 0 END ), 0) AS manSum,
+        IFNULL(SUM( CASE WHEN t2.sex = 2 THEN 1 ELSE 0 END ), 0) AS womanSum
+        FROM
+        his_clinic_appoint t1
+        INNER JOIN  his_patient_card t2 ON t1.card_id = t2.id
+        WHERE t1.clinic_status= 3
+        AND t1.clinic_end_time &gt;= #{beginTime}
+        AND t1.clinic_end_time &lt;= #{endTime}
+    </select>
+</mapper>

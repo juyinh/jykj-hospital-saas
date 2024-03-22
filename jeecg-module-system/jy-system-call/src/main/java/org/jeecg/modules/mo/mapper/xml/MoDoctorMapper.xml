@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.mo.mapper.MoDoctorMapper">
+    <select id="getDoctorList" resultType="org.jeecg.modules.mo.vo.MoDoctorVO">
+        SELECT
+            t1.realname,
+            t1.avatar,
+            t1.sex,
+            t1.id,
+            t2.id as doctorId,
+            t2.career,
+            t2.introduction,
+            t2.reg_fee
+        FROM
+            sys_user t1
+                INNER JOIN his_doctor t2 ON t1.id = t2.user_id
+        WHERE t1.del_flag = 0
+            AND t2.tenant_id = #{tenantId}
+        <if test="officeId !=null and officeId !=''">
+            AND t2.office_id = #{officeId}
+        </if>
+    </select>
+
+    <select id="queryTodayDoctorWorkList" resultType="org.jeecg.modules.mo.vo.MoDoctorVO">
+        SELECT
+            t1.realname,
+            t1.avatar,
+            t1.sex,
+            t1.id,
+            t2.id AS doctorId,
+            t2.career,
+            t2.introduction,
+            t2.reg_fee,
+            t3.id AS doctorWorkId
+        FROM
+            sys_user t1
+            INNER JOIN his_doctor t2 ON t1.id = t2.user_id
+            INNER JOIN his_doctor_work t3 ON t2.id = t3.doctor_id
+        WHERE
+            t1.del_flag = 0
+            AND t3.work_day = date_format(now(),'%Y-%m-%d')
+            AND t2.tenant_id = #{tenantId}
+        <if test="officeId !=null and officeId !=''">
+            AND t2.office_id = #{officeId}
+        </if>
+    </select>
+</mapper>

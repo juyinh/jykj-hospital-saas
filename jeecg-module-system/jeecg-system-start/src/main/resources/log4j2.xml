@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <!-- 第一全局参数信息 -->
+    <Properties>
+        <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} -- %style{[%t]}{bright,magenta} %highlight{%-5level}{ERROR=Bright RED, WARN=Bright Yellow, INFO=Bright Green, DEBUG=Bright Cyan, TRACE=Bright White} %logger{36}.%M - %msg%n"/>
+        <!-- info 日志文件位置及名称，在rollFile的时候老文件的生成规则 -->
+        <property name="INFO_FILE_PATH_ING" value="../logs/saas_info.log"/>
+        <property name="INFO_FILE_PATH_ED" value="../logs/saas_info-%d{yyyy-MM-dd}.%i.log"/>
+
+        <!-- warn 日志文件位置及名称，在rollFile的时候老文件的生成规则 -->
+        <property name="WARN_FILE_PATH_ING" value="../logs/saas_warn.log"/>
+        <property name="WARN_FILE_PATH_ED" value="../logs/saas_warn-%d{yyyy-MM-dd}.%i.log"/>
+
+        <!-- error 日志文件位置及名称，在rollFile的时候老文件的生成规则 -->
+        <property name="ERROR_FILE_PATH_ING" value="../logs/saas_error.log"/>
+        <property name="ERROR_FILE_PATH_ED" value="../logs/saas_error-%d{yyyy-MM-dd}.%i.log"/>
+
+        <!-- 日志文件最大文件大小全局配置，一天之内最大文件产生数量全局配置 -->
+        <property name="MAX_FILE_SIZE" value="100MB"/>
+        <property name="MAX_FILE_NUM" value="30"/>saas
+    </Properties>
+
+    <appenders>
+        <!-- 控制台输出日志信息 -->
+        <console name="Console_Log" target="SYSTEM_OUT">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </console>
+
+        <!-- info日志文件输出日志信息 -->
+        <RollingFile name="Info_File" fileName="${INFO_FILE_PATH_ING}" filePattern="${INFO_FILE_PATH_ED}">
+            <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="${MAX_FILE_SIZE}"/>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+            <DefaultRolloverStrategy max="${MAX_FILE_NUM}"/>
+        </RollingFile>
+
+        <!-- warn日志文件输出日志信息 -->
+        <RollingFile name="Warn_File" fileName="${WARN_FILE_PATH_ING}" filePattern="${WARN_FILE_PATH_ED}">
+            <ThresholdFilter level="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="${MAX_FILE_SIZE}"/>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+            <DefaultRolloverStrategy max="${MAX_FILE_NUM}"/>
+        </RollingFile>
+
+        <!-- error日志文件输出日志信息 -->
+        <RollingFile name="Error_File" fileName="${ERROR_FILE_PATH_ING}" filePattern="${ERROR_FILE_PATH_ED}">
+            <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="${MAX_FILE_SIZE}"/>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+            <DefaultRolloverStrategy max="${MAX_FILE_NUM}"/>
+        </RollingFile>
+    </appenders>
+
+    <!--配置总的日志监听级别-->
+    <loggers>
+        <root level="INFO">
+            <appender-ref ref="Console_Log"/>
+            <appender-ref ref="Info_File"/>
+            <appender-ref ref="Warn_File"/>
+            <appender-ref ref="Error_File"/>
+        </root>
+    </loggers>
+</configuration>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.pc.mapper.PcOfficeMapper">
+    <select id="getOffice" resultType="org.jeecg.modules.common.entity.Office">
+        select * from his_office where id = #{officeId}
+    </select>
+
+</mapper>

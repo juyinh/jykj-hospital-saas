@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.mo.mapper.MoClinicRoomMapper">
+    <select id="getClinicRoomNameByAppoint" resultType="java.util.Map">
+    SELECT
+        hcr.id AS clinicRoomId,
+        hcr.clinic_room_name AS clinicRoomName
+    FROM
+        his_clinic_appoint hca
+        INNER JOIN his_doctor_work_detail hdwd ON hca.doctor_work_detail_id = hdwd.id
+        INNER JOIN his_doctor_work hdw ON hdwd.doctor_word_id = hdw.id
+        INNER JOIN his_clinic_room hcr ON hdw.clinic_room_id = hcr.id
+        where
+        hca.id = #{appointId}
+        LIMIT 1;
+    </select>
+
+</mapper>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.mo.mapper.MoDoctorWorkMapper">
+    <select id="getDoctorWorkDetailList" resultType="org.jeecg.modules.mo.vo.MoDoctorWorkDetailListVO">
+        SELECT
+            hdsd.id,
+            hdw.id AS workId,
+            hdw.work_day,
+            hdsd.begin_time_clinic,
+            hdsd.end_time_clinic,
+            hdsd.work_period,
+            hdsd.num_total
+        FROM
+            his_doctor_work_detail hdsd
+            INNER JOIN his_doctor_work hdw ON hdsd.doctor_word_id = hdw.id
+        WHERE
+           hdw.doctor_id = #{doctorId}
+           AND hdw.work_day = #{workDay}
+        ORDER BY hdsd.work_period ASC
+    </select>
+</mapper>

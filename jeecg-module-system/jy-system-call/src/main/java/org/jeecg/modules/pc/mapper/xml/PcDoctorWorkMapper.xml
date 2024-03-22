@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.pc.mapper.PcDoctorWorkMapper">
+    <select id="getDoctorWorkList" resultType="org.jeecg.modules.pc.vo.DoctorWorkPageVO">
+        SELECT
+        t1.id,
+        t1.doctor_id,
+        t1.appoint_type,
+        t1.appoint_status,
+        t1.clinic_status,
+        t1.appoint_time,
+        t1.appoint_total,
+        t1.num_total,
+        t1.work_day,
+        t1.create_time,
+        t1.create_by,
+        t1.is_show,
+        t3.realname,
+        t4.office_name,
+        t5.clinic_room_name
+        FROM his_doctor_work t1
+        LEFT JOIN his_doctor t2 ON t1.doctor_id = t2.id
+        LEFT JOIN sys_user t3 ON t2.user_id = t3.id
+        LEFT JOIN his_office t4 ON t2.office_id = t4.id
+        LEFT JOIN his_clinic_room t5 ON t1.clinic_room_id = t5.id
+        <where>
+            <if test="dto.appointStatus != null">
+                AND t1.appoint_status = #{dto.appointStatus}
+            </if>
+            <if test="dto.clinicStatus != null">
+                AND t1.clinic_status = #{dto.clinicStatus}
+            </if>
+            <if test="dto.tenantId != null and dto.tenantId!=''">
+                AND t1.tenant_id = #{dto.tenantId}
+            </if>
+            <if test="dto.workDay != null">
+                AND t1.work_day = #{dto.workDay}
+            </if>
+            <if test="dto.doctorId != null and dto.doctorId!=''">
+                AND t1.doctor_id = #{dto.doctorId}
+            </if>
+            <if test="dto.officeId != null and dto.officeId!=''">
+                AND t2.office_id = #{dto.officeId}
+            </if>
+            <if test="dto.realname != null and dto.realname!=''">
+                AND t3.realname like concat(concat('%',#{dto.realname}),'%')
+            </if>
+            <if test="dto.officeName != null and dto.officeName!= ''">
+                AND t4.office_name like concat(concat('%',#{dto.officeName}),'%')
+            </if>
+            <if test="dto.clinicRoomName != null and dto.clinicRoomName!= ''">
+                AND t5.clinic_room_name like concat(concat('%',#{dto.clinicRoomName}),'%')
+            </if>
+        </where>
+        ORDER BY t1.work_day DESC, t1.create_time DESC
+    </select>
+
+</mapper>

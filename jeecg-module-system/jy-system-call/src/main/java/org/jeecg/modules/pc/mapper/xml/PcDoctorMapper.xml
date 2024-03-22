@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.pc.mapper.PcDoctorMapper">
+
+    <select id="getDoctor" resultType="org.jeecg.modules.common.entity.Doctor">
+        SELECT
+            t1.*
+        FROM
+            his_doctor t1
+        WHERE t1.user_id = #{userId}
+    </select>
+
+    <select id="getDoctorList" parameterType="org.jeecg.modules.pc.dto.DoctorQueryPageDTO"
+    resultType="org.jeecg.modules.pc.vo.DoctorQueryPageVO">
+        SELECT
+            t1.id AS userId,
+            t1.id,
+            t1.realname,
+            t1.username,
+            t1.phone,
+            t1.email,
+            t1.sex,
+            t1.avatar,
+            t1.birthday,
+            t1.create_time AS createTime,
+            t1.status,
+            t2.id AS doctorId,
+            t2.career,
+            t2.office_id AS officeId,
+            t3.office_name AS officeName,
+            t5.role_name AS roleName
+        FROM
+                sys_user t1
+                INNER JOIN his_doctor t2 ON t1.id = t2.user_id
+                LEFT JOIN his_office t3 ON t2.office_id = t3.id
+                LEFT JOIN sys_user_role t4 ON t1.id = t4.user_id
+                LEFT JOIN sys_role t5 ON t4.role_id = t5.id
+        <where>
+                AND t1.del_flag = 0
+            <if test="dto.realname !=null and dto.realname !='' ">
+                and t1.realname like concat(concat('%',#{dto.realname}),'%')
+            </if>
+            <if test="dto.officeId != null and dto.officeId != ''">
+                and t3.id = #{dto.officeId}
+            </if>
+            <if test="dto.officeName != null and dto.officeName != ''">
+                and t3.office_name  like concat(concat('%',#{dto.officeName}),'%')
+            </if>
+            <if test="dto.career != null and dto.career !=''">
+                and t2.career like concat(concat('%',#{dto.career}),'%')
+            </if>
+        </where>
+        ORDER BY t1.create_time DESC
+    </select>
+</mapper>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.pc.mapper.PcPatientCaseMapper">
+    <select id="queryHistoryCase" resultType="org.jeecg.modules.pc.vo.ClinicHistoryPageVO">
+        SELECT
+            hpcc.id,
+            hcp.card_id,
+            hd.doctor_name,
+            hpc.realname AS patientName,
+            hcp.clinic_begin_time,
+            hcp.clinic_status
+        FROM
+            his_patient_case hpcc
+                INNER JOIN his_clinic_appoint hcp ON hpcc.appoint_id = hcp.id
+                LEFT JOIN his_patient_card hpc ON hcp.card_id = hpc.id
+                LEFT JOIN his_doctor hd ON hcp.doctor_id = hd.id
+        WHERE
+            hcp.del_flag = 0
+          AND hpcc.del_flag = 0
+        <if test="doctorId !=null and doctorId!=''">
+            AND hpcc.doctor_id = #{doctorId}
+        </if>
+        <if test="dto.doctorName !=null and dto.doctorName!=''">
+            AND hd.doctor_name like concat('%',#{dto.doctorName},'%')
+        </if>
+        <if test="dto.patientName !=null and dto.patientName!=''">
+            AND hpcc.realname like concat('%',#{dto.patientName},'%')
+        </if>
+        <if test="dto.beginAppointDay != null">
+            AND hcp.appoint_day &gt;= #{dto.beginAppointDay}
+        </if>
+        <if test="dto.endAppointDay != null">
+            AND hcp.appoint_day &lt;= #{dto.endAppointDay}
+        </if>
+        ORDER BY hcp.appoint_day DESC, hcp.queue_number ASC
+    </select>
+    <select id="getPatientCaseDetail" resultType="org.jeecg.modules.pc.vo.PcPatientCaseDetailVO">
+        SELECT
+        t1.id,
+        t1.case_detail,
+        t1.diagnosis_result,
+        t1.diagnosis_fee,
+        t1.payment_status,
+        t2.doctor_work_detail_id,
+        t2.card_id,
+        t2.doctor_id,
+        t2.queue_number,
+        t2.appoint_number,
+        date_format(t2.appoint_day,'%Y-%m-%d') AS appointDay,
+        t2.appoint_period,
+        t2.appoint_status,
+        t2.clinic_status,
+        date_format(t2.clinic_begin_time,'%Y-%m-%d %H:%i:%s') AS clinicTime,
+        t2.clinic_end_time,
+        t2.create_time,
+        t4.realname AS doctorName,
+        t5.realname AS patientName,
+        t5.age,
+        t5.sex,
+        t6.NAME AS hospitalName,
+        t7.office_name
+        FROM
+        his_patient_case t1
+        LEFT JOIN his_clinic_appoint t2 ON t1.appoint_id = t2.id
+        LEFT JOIN his_doctor t3 ON t2.doctor_id = t3.id
+        LEFT JOIN sys_user t4 ON t3.user_id = t4.id
+        LEFT JOIN his_patient_card t5 ON t1.card_id = t5.id
+        LEFT JOIN sys_tenant t6 ON t2.tenant_id = t6.id
+        LEFT JOIN his_office t7 ON t3.office_id = t7.id
+        <where>
+            t1.id = #{caseId}
+        </where>
+    </select>
+</mapper>
