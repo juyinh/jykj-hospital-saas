@@ -67,7 +67,8 @@
 
 
 演示公众号
-![e26cec11353e68a9930a12b0b5797be](https://github.com/juyinh/jykj-hospital-saas/assets/164468654/68585026-5a93-466e-b515-ed5ab5b99297)
+![qrcode_for_gh_36c05e0b73cc_430](https://github.com/juyinh/jykj-hospital-saas/assets/164468654/fb99b0c6-5146-4244-8378-d48ee15e2c46)
+
 
 
 1、首页
