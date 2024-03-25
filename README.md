@@ -1,26 +1,32 @@
-一、后端
-基础框架：Spring Boot 2.6.6
+## 一、后端
 
-微服务框架： Spring Cloud Alibaba 2021.0.1.0
+- 基础框架：Spring Boot 2.6.6
 
-持久层框架：MybatisPlus 3.5.1
+- 微服务框架： Spring Cloud Alibaba 2021.0.1.0
 
-报表工具： JimuReport 1.5.2
+- 持久层框架：MybatisPlus 3.5.1
 
-安全框架：Apache Shiro 1.8.0，Jwt 3.11.0
+- 报表工具： JimuReport 1.5.2
 
-消息中间件：disruptor
+- 安全框架：Apache Shiro 1.8.0，Jwt 3.11.0
 
-数据库：MySQL
+- 消息中间件：disruptor
 
-数据库连接池：阿里巴巴Druid 1.1.22
+- 数据库：MySQL
 
-日志打印：logback
+- 数据库连接池：阿里巴巴Druid 1.1.22
 
-其他：autopoi, fastjson，poi，Swagger-ui，quartz, lombok（简化代码）等。
+- 日志打印：logback
 
+- 其他：autopoi, fastjson，poi，Swagger-ui，quartz, lombok（简化代码）等。
 
-二、PC端系统相关页面
+  
+
+  **基础框架教程地址：**
+
+  https://help.jeecg.com/java/readme.html
+
+## 二、PC端系统相关页面
 
 演示地址：http://36.41.65.31:8082/login
 
@@ -59,12 +65,10 @@
 
 ![image](https://github.com/juyinh/jykj-hospital-saas/assets/164468654/8b992925-8a3a-479d-bee4-f069df35cffa)
 
-
-三、微信公众号端
+## 三、微信公众号端
 
 正式环境公众号：
 ![qrcode_for_gh_3c4ced95e1f3_430](https://github.com/juyinh/jykj-hospital-saas/assets/164468654/26a35826-ce77-40cb-8f31-887bb00b8449)
-
 
 演示公众号
 ![qrcode_for_gh_36c05e0b73cc_430](https://github.com/juyinh/jykj-hospital-saas/assets/164468654/fb99b0c6-5146-4244-8378-d48ee15e2c46)
@@ -87,7 +91,6 @@
 3、排队列表
 
 ![image](https://github.com/juyinh/jykj-hospital-saas/assets/164468654/4f75729c-5cb6-4025-9db7-605f21a47773)
-
 
 
 
