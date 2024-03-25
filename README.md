@@ -1,10 +1,28 @@
 一、后端
+基础框架：Spring Boot 2.6.6
+
+微服务框架： Spring Cloud Alibaba 2021.0.1.0
+
+持久层框架：MybatisPlus 3.5.1
+
+报表工具： JimuReport 1.5.2
+
+安全框架：Apache Shiro 1.8.0，Jwt 3.11.0
+
+消息中间件：disruptor
+
+数据库：MySQL
+
+数据库连接池：阿里巴巴Druid 1.1.22
+
+日志打印：logback
+
+其他：autopoi, fastjson，poi，Swagger-ui，quartz, lombok（简化代码）等。
 
 
 二、PC端系统相关页面
 
 演示地址：http://36.41.65.31:8082/login
-
 
 
 1、注册：
@@ -44,6 +62,14 @@
 
 三、微信公众号端
 
+正式环境公众号：
+![qrcode_for_gh_3c4ced95e1f3_430](https://github.com/juyinh/jykj-hospital-saas/assets/164468654/26a35826-ce77-40cb-8f31-887bb00b8449)
+
+
+演示公众号
+![e26cec11353e68a9930a12b0b5797be](https://github.com/juyinh/jykj-hospital-saas/assets/164468654/68585026-5a93-466e-b515-ed5ab5b99297)
+
+
 1、首页
 
 ![image](https://github.com/juyinh/jykj-hospital-saas/assets/164468654/d60c76ff-eb81-4c5b-bf14-022add0d6801)
@@ -60,7 +86,6 @@
 3、排队列表
 
 ![image](https://github.com/juyinh/jykj-hospital-saas/assets/164468654/4f75729c-5cb6-4025-9db7-605f21a47773)
-
 
 
 
