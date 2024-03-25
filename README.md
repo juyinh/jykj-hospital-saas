@@ -46,6 +46,7 @@
 
 租户审核：
 
+![image](https://github.com/juyinh/jykj-hospital-saas/assets/164468654/322d4426-757a-4e9d-854d-63c00fd3271a)
 
 
 2、系统首页
